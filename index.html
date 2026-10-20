@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCN & Collections Assistant Pro v3.0</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --purple: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 16px;
+            line-height: 1.5;
+        }
+
+        /* BARRA SUPERIOR */
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #60a5fa;
+        }
+
+        .au-clock-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.86rem;
+        }
+
+        .au-badge {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .au-badge:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .api-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .api-input {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.83rem;
+            width: 195px;
+        }
+
+        /* LAYOUT PRINCIPAL */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1.05fr 1.15fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 1080px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 0.93rem;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* CALCULADORA */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .approval-banner {
+            display: none;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--warning);
+            color: #fcd34d;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calc-result {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* BOTONES Y SELECTORES */
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-toggle {
+            flex: 1;
+            min-width: 100px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.84rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .btn-toggle.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn-toggle.active-purple {
+            background: var(--purple);
+            border-color: var(--purple);
+            color: white;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .chip {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid var(--border);
+            color: #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .chip:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        textarea.main-textarea {
+            width: 100%;
+            min-height: 135px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.94rem;
+            resize: vertical;
+            margin-bottom: 12px;
+        }
+
+        textarea.main-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            flex: 2;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-mic {
+            background: #334155;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-mic.recording {
+            background: var(--danger);
+            animation: pulse 1.4s infinite;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.78rem;
+            border-radius: 6px;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover {
+            color: white;
+            border-color: #64748b;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* TARJETAS DE SALIDA */
+        .output-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 90px;
+            white-space: pre-wrap;
+            font-size: 0.92rem;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+        }
+
+        .output-box[contenteditable="true"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .privacy-note {
+            font-size: 0.75rem;
+            color: #34d399;
+            margin-top: 3px;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .helper-hint {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        <div class="brand">
+            <span>⚡ TCN & Collections Assistant Pro v3.0</span>
+        </div>
+
+        <div class="au-clock-box">
+            <span>🇦🇺 <strong>Australia:</strong> <span id="auTime">--:--</span></span>
+            <span class="au-badge" onclick="insertText(document.getElementById('auToday').innerText)" title="Clic para insertar">Hoy: <span id="auToday">--/--/----</span></span>
+            <span class="au-badge" onclick="insertText(document.getElementById('auTomorrow').innerText)" title="Clic para insertar">Mañana: <span id="auTomorrow">--/--/----</span></span>
+            <span class="au-badge" onclick="insertText(document.getElementById('auPlus2').innerText)" title="Clic para insertar">+2 Días: <span id="auPlus2">--/--/----</span></span>
+        </div>
+
+        <div class="api-box">
+            <span id="apiStatusDot" class="status-dot" style="background: var(--danger);" title="Estado de API Key"></span>
+            <input type="password" id="apiKeyInput" class="api-input" placeholder="Pega tu Gemini API Key..." oninput="saveApiKey()">
+            <button class="btn btn-outline btn-sm" onclick="toggleKeyVisibility()" title="Mostrar/Ocultar">👁️</button>
+            <button class="btn btn-outline btn-sm" onclick="testApiConnection()" id="testApiBtn">🔍 Probar API</button>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="grid-layout">
+
+        <!-- COLUMNA IZQUIERDA: CALCULADORA + ENTRADA -->
+        <div>
+            <!-- BLOQUE 1: CALCULADORA INTELIGENTE DE SPLITS -->
+            <div class="card">
+                <div class="card-title">
+                    <span>🧮 Calculadora Inteligente de Splits</span>
+                    <button class="btn btn-outline btn-sm" onclick="clearCalculator()">Limpiar</button>
+                </div>
+
+                <div class="calc-grid">
+                    <div class="form-group">
+                        <label>1. Frecuencia de Cuenta</label>
+                        <select id="calcFreq" class="form-control" onchange="onFrequencyChange()">
+                            <option value="7">Weekly (Semanal - 7d)</option>
+                            <option value="14" selected>Fortnightly (Catorcenal - 14d)</option>
+                            <option value="30">Monthly (Mensual - 30d)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. N° Facturas (Splits)</label>
+                        <select id="calcSplits" class="form-control" onchange="calculateSplit()">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>3. MMP Regular ($)</label>
+                        <input type="number" step="0.01" id="calcMmp" class="form-control" placeholder="Ej. 37.45" oninput="calculateSplit()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>4. Deuda Actual + Late Fees ($)</label>
+                        <input type="number" step="0.01" id="calcArrears" class="form-control" placeholder="Ej. 37.45" oninput="calculateSplit()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>5. Fecha Último Pago en Deuda</label>
+                        <input type="date" id="calcLastUnpaidDate" class="form-control" onchange="onLastUnpaidDateChange()">
+                        <div class="helper-hint">Detecta facturas extra antes del 1er cobro.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>6. 1ra Fecha de Cobro (Inicio Split)</label>
+                        <input type="date" id="calcStartDate" class="form-control" onchange="calculateSplit()">
+                        <div class="helper-hint" id="nextCycleHint">Fecha en que inicia el arreglo.</div>
+                    </div>
+                </div>
+
+                <!-- ALERTA DE MANAGER APPROVAL -->
+                <div id="approvalBanner" class="approval-banner">
+                    <span>⚠️ <strong>ATENCIÓN:</strong> Esta cantidad de facturas excede el límite estándar y <strong>requiere Manager Approval</strong> antes de confirmarse.</span>
+                </div>
+
+                <div class="calc-result">
+                    <div id="calcSummaryText" style="flex: 1;">
+                        Ingresa el <strong>MMP</strong> y la <strong>Deuda Actual</strong> para calcular las cuotas y fechas exactas.
+                    </div>
+                    <button class="btn btn-success btn-sm" onclick="injectSplitToPrompt()">➕ Inyectar al Relato</button>
+                </div>
+            </div>
+
+            <!-- BLOQUE 2: ENTRADA DE LLAMADA -->
+            <div class="card">
+                <div class="card-title">
+                    <span>🎙️ Configuración y Relato de la Llamada</span>
+                    <button class="btn btn-outline btn-sm" onclick="clearInput()">Borrar texto</button>
+                </div>
+
+                <label style="font-size: 0.78rem; color: var(--text-muted); display:block; margin-bottom: 4px;">1. Dirección de la llamada:</label>
+                <div class="toggle-group">
+                    <button class="btn-toggle active" id="dirOB" onclick="setDirection('OB TCN')">📞 OB TCN (Outbound)</button>
+                    <button class="btn-toggle" id="dirIB" onclick="setDirection('IB TCN')">📲 IB TCN (Inbound)</button>
+                    <button class="btn-toggle" id="dirTCN" onclick="setDirection('TCN')">📝 TCN (Sin prefijo)</button>
+                </div>
+
+                <label style="font-size: 0.78rem; color: var(--text-muted); display:block; margin-bottom: 4px;">2. Modo de Generación:</label>
+                <div class="toggle-group">
+                    <button class="btn-toggle active-purple" id="modeSF" onclick="setMode('SF')">⚡ Solo Nota SF</button>
+                    <button class="btn-toggle" id="modeWAIVER" onclick="setMode('WAIVER')">💬 Combo Waiver (Teams + SF)</button>
+                    <button class="btn-toggle" id="modeHSPA" onclick="setMode('HSPA')">🛡️ Combo Hardship (SF + HSPA)</button>
+                </div>
+
+                <!-- CAMPO LOCAL ACCOUNT # -->
+                <div id="accountBox" style="margin-bottom: 12px; display: none;">
+                    <label style="font-size: 0.78rem; color: var(--text-muted);">Account # (Opcional para el mensaje de Teams):</label>
+                    <input type="text" id="localAccountNum" class="form-control" placeholder="Ej. 98765432" oninput="updateTeamsAccountPreview()">
+                    <div class="privacy-note">🔒 100% Privado: Este número NO se envía a la IA; tu navegador lo inserta localmente en la tarjeta de Teams.</div>
+                </div>
+
+                <label style="font-size: 0.78rem; color: var(--text-muted); display:block; margin-bottom: 6px;">3. Atajos rápidos (Clic para agregar al texto):</label>
+                <div class="chips-container">
+                    <span class="chip" onclick="insertText('El cliente no quiso completar la verificación de seguridad, por lo que no se pudo avanzar con la llamada y se desconectó. ')">🚫 No verificó</span>
+                    <span class="chip" onclick="insertText('El cliente no tenía tiempo para hablar y agendamos callback para las ')">⏰ Agendó Callback</span>
+                    <span class="chip" onclick="insertText('Se procesó un POP (Payment Over the Phone) por $')">💳 Hizo POP</span>
+                </div>
+
+                <textarea id="callNotesInput" class="main-textarea" placeholder="Escribe o dicta en español qué pasó en la llamada..."></textarea>
+
+                <div class="action-row">
+                    <button class="btn btn-mic" id="micBtn" onclick="toggleDictation()">🎙️ Dictar (Español)</button>
+                    <button class="btn btn-primary" id="generateBtn" onclick="generateNotes()">✨ Generar Notas (Ctrl + Enter)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: RESULTADOS -->
+        <div>
+            <!-- TARJETA 1: OPCIÓN ESTÁNDAR -->
+            <div class="card">
+                <div class="card-title">
+                    <span style="color: #60a5fa;">⭐ Opción 1: Resumida Estándar (Recomendada)</span>
+                    <button class="btn btn-primary btn-sm" onclick="copyText('outStandard', this)">📋 Copiar Nota</button>
+                </div>
+                <div id="outStandard" class="output-box" contenteditable="true">Aquí aparecerá tu nota estándar de Salesforce...</div>
+            </div>
+
+            <!-- TARJETA 2: OPCIÓN ULTRA COMPACTA -->
+            <div class="card">
+                <div class="card-title">
+                    <span style="color: #94a3b8;">⚡ Opción 2: Ultra-Compacta</span>
+                    <button class="btn btn-outline btn-sm" onclick="copyText('outCompact', this)">📋 Copiar Nota</button>
+                </div>
+                <div id="outCompact" class="output-box" contenteditable="true">Aquí aparecerá la versión ultra-compacta...</div>
+            </div>
+
+            <!-- TARJETA 3: DINÁMICA (TEAMS WAIVER O TICKET HSPA) -->
+            <div class="card" id="extraCard">
+                <div class="card-title">
+                    <span id="extraCardTitle" style="color: #c084fc;">💬 Plantilla Adicional (Teams / Hardship HSPA)</span>
+                    <button class="btn btn-success btn-sm" onclick="copyText('outExtra', this)">📋 Copiar Bloque</button>
+                </div>
+                <div id="outExtra" class="output-box" contenteditable="true">Cuando elijas "Combo Waiver" o "Combo Hardship", aquí aparecerá el mensaje para Teams o el formato del ticket 1-month HSPA listo para copiar...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ESTADO GLOBAL
+        let callDirection = 'OB TCN';
+        let currentMode = 'SF';
+        let lastCalculatedSplitText = '';
+        let rawExtraTemplate = '';
+        let cachedWorkingModel = null;
+
+        // CONFIGURACIÓN DE OPCIONES DE SPLIT SEGÚN FRECUENCIA
+        const splitOptionsConfig = {
+            '7': [
+                { val: 2, label: '2 Semanas (Estándar)', approval: false },
+                { val: 3, label: '3 Semanas (Estándar)', approval: false, defaultSelected: true },
+                { val: 4, label: '4 Semanas (Estándar)', approval: false },
+                { val: 5, label: '5 Semanas (Estándar)', approval: false },
+                { val: 6, label: '6 Semanas (Estándar)', approval: false },
+                { val: 7, label: '7 Semanas (Estándar)', approval: false },
+                { val: 8, label: '8 Semanas (Estándar)', approval: false },
+                { val: 9, label: '9 Semanas (⚠️ Manager Approval)', approval: true },
+                { val: 10, label: '10 Semanas (⚠️ Manager Approval)', approval: true },
+                { val: 11, label: '11 Semanas (⚠️ Manager Approval)', approval: true },
+                { val: 12, label: '12 Semanas (⚠️ Manager Approval)', approval: true }
+            ],
+            '14': [
+                { val: 2, label: '2 Facturas (Estándar)', approval: false },
+                { val: 3, label: '3 Facturas (Estándar)', approval: false, defaultSelected: true },
+                { val: 4, label: '4 Facturas (Estándar)', approval: false },
+                { val: 5, label: '5 Facturas (⚠️ Manager Approval)', approval: true },
+                { val: 6, label: '6 Facturas (⚠️ Manager Approval)', approval: true }
+            ],
+            '30': [
+                { val: 1, label: '1 Mes - Doble Pago (Estándar)', approval: false },
+                { val: 2, label: '2 Meses (Estándar)', approval: false, defaultSelected: true },
+                { val: 3, label: '3 Meses (⚠️ Manager Approval)', approval: true },
+                { val: 4, label: '4 Meses (⚠️ Manager Approval)', approval: true }
+            ]
+        };
+
+        // 1. RELOJ Y FECHAS DE AUSTRALIA EN TIEMPO REAL
+        function updateAustraliaClock() {
+            const now = new Date();
+            const formatter = new Intl.DateTimeFormat('en-AU', {
+                timeZone: 'Australia/Sydney',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+
+            const parts = formatter.formatToParts(now);
+            const map = {};
+            parts.forEach(p => map[p.type] = p.value);
+
+            const todayStr = `${map.day}/${map.month}/${map.year}`;
+            document.getElementById('auTime').innerText = `${map.hour}:${map.minute}:${map.second} ${map.dayPeriod.toUpperCase()}`;
+            document.getElementById('auToday').innerText = todayStr;
+
+            const auDateObj = new Date(`${map.year}-${map.month}-${map.day}T12:00:00`);
+
+            const tomObj = new Date(auDateObj);
+            tomObj.setDate(tomObj.getDate() + 1);
+            document.getElementById('auTomorrow').innerText = formatDateDDMMYYYY(tomObj);
+
+            const plus2Obj = new Date(auDateObj);
+            plus2Obj.setDate(plus2Obj.getDate() + 2);
+            document.getElementById('auPlus2').innerText = formatDateDDMMYYYY(plus2Obj);
+        }
+
+        function formatDateDDMMYYYY(dateObj) {
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const y = dateObj.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function formatDateYYYYMMDD(dateObj) {
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const y = dateObj.getFullYear();
+            return `${y}-${m}-${d}`;
+        }
+
+        function addCycleToDate(dateObj, freqDays) {
+            const next = new Date(dateObj.getTime());
+            if (freqDays === 30) {
+                next.setMonth(next.getMonth() + 1);
+            } else {
+                next.setDate(next.getDate() + freqDays);
+            }
+            return next;
+        }
+
+        setInterval(updateAustraliaClock, 1000);
+        updateAustraliaClock();
+
+        // INICIALIZACIÓN AL CARGAR LA PÁGINA
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('gemini_tcn_api_key');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+                document.getElementById('apiStatusDot').style.background = 'var(--success)';
+            }
+            const todayParts = document.getElementById('auToday').innerText.split('/');
+            if (todayParts.length === 3) {
+                const isoToday = `${todayParts[2]}-${todayParts[1]}-${todayParts[0]}`;
+                document.getElementById('calcStartDate').value = isoToday;
+            }
+            populateSplitDropdown('14');
+        });
+
+        // 2. GESTIÓN Y AUTO-DESCUBRIMIENTO DE MODELOS DE GEMINI API
+        function saveApiKey() {
+            const raw = document.getElementById('apiKeyInput').value;
+            const cleanKey = raw.replace(/\s+/g, '');
+            cachedWorkingModel = null;
+            if (cleanKey) {
+                localStorage.setItem('gemini_tcn_api_key', cleanKey);
+                document.getElementById('apiStatusDot').style.background = 'var(--success)';
+            } else {
+                localStorage.removeItem('gemini_tcn_api_key');
+                document.getElementById('apiStatusDot').style.background = 'var(--danger)';
+            }
+        }
+
+        function toggleKeyVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        async function getCandidateModels(apiKey) {
+            const defaultList = [
+                'gemini-3.8-flash',
+                'gemini-3.0-flash',
+                'gemini-3-flash',
+                'gemini-2.5-flash',
+                'gemini-2.0-flash'
+            ];
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                const data = await res.json();
+                if (data && Array.isArray(data.models)) {
+                    const available = data.models
+                        .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+                        .map(m => m.name.replace(/^models\//, ''))
+                        .filter(name => name.includes('gemini') && !name.includes('vision') && !name.includes('embedding') && !name.includes('imagen') && !name.includes('tts'));
+
+                    const flashModels = available.filter(n => n.includes('flash')).sort().reverse();
+                    const otherModels = available.filter(n => !n.includes('flash')).sort().reverse();
+                    const combined = [...new Set([...defaultList, ...flashModels, ...otherModels])];
+                    return combined;
+                }
+            } catch (e) {
+                // Si la consulta de lista falla, usar la lista prioritaria por defecto
+            }
+            return defaultList;
+        }
+
+        async function callGeminiWithFallback(apiKey, systemInstruction, userText, expectJson = true) {
+            const candidateModels = cachedWorkingModel
+                ? [cachedWorkingModel, ...(await getCandidateModels(apiKey))]
+                : await getCandidateModels(apiKey);
+
+            const uniqueModels = [...new Set(candidateModels)];
+            let lastError = null;
+
+            for (const modelName of uniqueModels) {
+                try {
+                    const payload = {
+                        system_instruction: { parts: [{ text: systemInstruction }] },
+                        contents: [{ parts: [{ text: userText }] }],
+                        generationConfig: {
+                            temperature: 0.2
+                        }
+                    };
+                    if (expectJson) {
+                        payload.generationConfig.responseMimeType = "application/json";
+                    }
+
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok || data.error) {
+                        lastError = data.error ? data.error.message : `HTTP ${response.status}`;
+                        continue;
+                    }
+
+                    cachedWorkingModel = modelName;
+                    return data.candidates[0].content.parts[0].text;
+                } catch (err) {
+                    lastError = err.message;
+                }
+            }
+            throw new Error(lastError || 'No se pudo conectar con ninguno de los modelos de Gemini.');
+        }
+
+        async function testApiConnection() {
+            const apiKey = document.getElementById('apiKeyInput').value.replace(/\s+/g, '');
+            if (!apiKey) {
+                alert('⚠️ Primero pega tu API Key en la casilla de arriba.');
+                return;
+            }
+            const btn = document.getElementById('testApiBtn');
+            btn.innerText = '⏳ Probando...';
+            btn.disabled = true;
+
+            try {
+                await callGeminiWithFallback(apiKey, 'Reply with OK', 'Test', false);
+                document.getElementById('apiStatusDot').style.background = 'var(--success)';
+                alert(`✅ ¡Conexión exitosa! Conectado automáticamente al modelo: ${cachedWorkingModel}`);
+            } catch (err) {
+                document.getElementById('apiStatusDot').style.background = 'var(--danger)';
+                alert(`❌ Error de API Key:\n${err.message}\n\nTip: Verifica tu llave en https://aistudio.google.com/app/apikey`);
+            } finally {
+                btn.innerText = '🔍 Probar API';
+                btn.disabled = false;
+            }
+        }
+
+        // 3. LÓGICA DE CALCULADORA INTELIGENTE DE SPLITS
+        function populateSplitDropdown(freq) {
+            const select = document.getElementById('calcSplits');
+            select.innerHTML = '';
+            const options = splitOptionsConfig[freq] || splitOptionsConfig['14'];
+
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.val;
+                el.textContent = opt.label;
+                el.dataset.approval = opt.approval ? 'true' : 'false';
+                if (opt.defaultSelected) el.selected = true;
+                select.appendChild(el);
+            });
+        }
+
+        function onFrequencyChange() {
+            const freq = document.getElementById('calcFreq').value;
+            populateSplitDropdown(freq);
+            onLastUnpaidDateChange();
+            calculateSplit();
+        }
+
+        function onLastUnpaidDateChange() {
+            const lastUnpaidVal = document.getElementById('calcLastUnpaidDate').value;
+            const freqDays = parseInt(document.getElementById('calcFreq').value) || 14;
+
+            if (lastUnpaidVal) {
+                const lastDate = new Date(lastUnpaidVal + 'T12:00:00');
+                const nextCycleDate = addCycleToDate(lastDate, freqDays);
+                document.getElementById('nextCycleHint').innerText = `Sig. ciclo natural: ${formatDateDDMMYYYY(nextCycleDate)}`;
+
+                const startVal = document.getElementById('calcStartDate').value;
+                if (!startVal || new Date(startVal + 'T12:00:00') <= lastDate) {
+                    document.getElementById('calcStartDate').value = formatDateYYYYMMDD(nextCycleDate);
+                }
+            } else {
+                document.getElementById('nextCycleHint').innerText = 'Fecha en que inicia el arreglo.';
+            }
+            calculateSplit();
+        }
+
+        function calculateSplit() {
+            const mmp = parseFloat(document.getElementById('calcMmp').value) || 0;
+            const currentArrears = parseFloat(document.getElementById('calcArrears').value) || 0;
+            const splitsSelect = document.getElementById('calcSplits');
+            const splits = parseInt(splitsSelect.value) || 2;
+            const freqDays = parseInt(document.getElementById('calcFreq').value) || 14;
+            const lastUnpaidVal = document.getElementById('calcLastUnpaidDate').value;
+            const startVal = document.getElementById('calcStartDate').value;
+
+            const selectedOption = splitsSelect.options[splitsSelect.selectedIndex];
+            const needsApproval = selectedOption && selectedOption.dataset.approval === 'true';
+            document.getElementById('approvalBanner').style.display = needsApproval ? 'flex' : 'none';
+
+            if (mmp <= 0 && currentArrears <= 0) {
+                document.getElementById('calcSummaryText').innerHTML = 'Ingresa el <strong>MMP</strong> y la <strong>Deuda Actual</strong> para calcular las cuotas y fechas exactas.';
+                lastCalculatedSplitText = '';
+                return;
+            }
+
+            let extraInvoicesCount = 0;
+            let intermediateDates = [];
+
+            if (lastUnpaidVal && startVal) {
+                const lastDate = new Date(lastUnpaidVal + 'T12:00:00');
+                const startDate = new Date(startVal + 'T12:00:00');
+
+                let pointer = addCycleToDate(lastDate, freqDays);
+                while (pointer.getTime() < (startDate.getTime() - 2 * 86400000)) {
+                    extraInvoicesCount++;
+                    intermediateDates.push(formatDateDDMMYYYY(pointer));
+                    pointer = addCycleToDate(pointer, freqDays);
+                    if (extraInvoicesCount > 12) break;
+                }
+            }
+
+            const extraInvoicesAmount = extraInvoicesCount * mmp;
+            const totalArrearsToSplit = currentArrears + extraInvoicesAmount;
+            const splitPortionPerInvoice = totalArrearsToSplit / splits;
+            const newTotalPerInvoice = (mmp + splitPortionPerInvoice).toFixed(2);
+
+            let datesArr = [];
+            let returnDateStr = '--/--/----';
+
+            if (startVal) {
+                let current = new Date(startVal + 'T12:00:00');
+                for (let i = 0; i < splits; i++) {
+                    datesArr.push(formatDateDDMMYYYY(current));
+                    current = addCycleToDate(current, freqDays);
+                }
+                returnDateStr = formatDateDDMMYYYY(current);
+            }
+
+            const datesJoined = datesArr.length ? datesArr.join(', ') : '(elige fecha)';
+
+            let extraInvoicesHtml = '';
+            if (extraInvoicesCount > 0) {
+                extraInvoicesHtml = `<div style="color:#fcd34d; margin-top:4px;">
+                    ➕ <strong>Facturas generadas antes del 1er cobro (${extraInvoicesCount}):</strong> +$${extraInvoicesAmount.toFixed(2)} (${intermediateDates.join(', ')})
+                    → <strong>Deuda Total a Dividir: $${totalArrearsToSplit.toFixed(2)}</strong>
+                </div>`;
+            }
+
+            document.getElementById('calcSummaryText').innerHTML = `
+                <div>
+                    <div>
+                        <strong>Nuevo Pago (${splits} ${splits === 1 ? 'factura' : 'facturas'}):</strong>
+                        <span style="color:#34d399; font-weight:700; font-size:0.95rem;">$${newTotalPerInvoice}</span>
+                        (MMP $${mmp.toFixed(2)} + Split $${splitPortionPerInvoice.toFixed(2)})
+                        ${needsApproval ? '<span style="color:#fbbf24; font-weight:700; margin-left:6px;">[⚠️ Requiere Manager Approval]</span>' : ''}
+                    </div>
+                    ${extraInvoicesHtml}
+                    <div style="margin-top:4px;">
+                        <strong>Fechas del Acuerdo:</strong> ${datesJoined}<br>
+                        <strong>Regresa a MMP Original ($${mmp.toFixed(2)}):</strong> ${returnDateStr}
+                    </div>
+                </div>
+            `;
+
+            const approvalNote = needsApproval ? ' (con Manager Approval)' : '';
+            if (extraInvoicesCount > 0) {
+                lastCalculatedSplitText = ` Cuenta con deuda actual de $${currentArrears.toFixed(2)} más ${extraInvoicesCount} factura(s) adicional(es) ($${extraInvoicesAmount.toFixed(2)}) previo al inicio del acuerdo, sumando un total atrasado de $${totalArrearsToSplit.toFixed(2)}. Se dividió en ${splits} facturas${approvalNote} resultando en pagos de $${newTotalPerInvoice} para las fechas ${datesJoined}, regresando a su MMP original de $${mmp.toFixed(2)} a partir de la factura del ${returnDateStr}.`;
+            } else {
+                lastCalculatedSplitText = ` Se quedó debiendo $${totalArrearsToSplit.toFixed(2)}, lo cual se dividió en las siguientes ${splits} facturas${approvalNote} resultando en $${newTotalPerInvoice} para pagar en las fechas ${datesJoined}, y regresando a su MMP original de $${mmp.toFixed(2)} a partir de la factura del ${returnDateStr}.`;
+            }
+        }
+
+        function injectSplitToPrompt() {
+            if (!lastCalculatedSplitText) {
+                alert('Primero ingresa el MMP y la Deuda en la calculadora.');
+                return;
+            }
+            insertText(lastCalculatedSplitText);
+        }
+
+        function clearCalculator() {
+            document.getElementById('calcMmp').value = '';
+            document.getElementById('calcArrears').value = '';
+            document.getElementById('calcLastUnpaidDate').value = '';
+            document.getElementById('nextCycleHint').innerText = 'Fecha en que inicia el arreglo.';
+            calculateSplit();
+        }
+
+        // 4. CONTROLES DE MODO Y DIRECCIÓN
+        function setDirection(dir) {
+            callDirection = dir;
+            document.getElementById('dirOB').classList.toggle('active', dir === 'OB TCN');
+            document.getElementById('dirIB').classList.toggle('active', dir === 'IB TCN');
+            document.getElementById('dirTCN').classList.toggle('active', dir === 'TCN');
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('modeSF').classList.toggle('active-purple', mode === 'SF');
+            document.getElementById('modeWAIVER').classList.toggle('active-purple', mode === 'WAIVER');
+            document.getElementById('modeHSPA').classList.toggle('active-purple', mode === 'HSPA');
+
+            document.getElementById('accountBox').style.display = (mode === 'WAIVER') ? 'block' : 'none';
+        }
+
+        function insertText(text) {
+            const area = document.getElementById('callNotesInput');
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            const current = area.value;
+            area.value = current.substring(0, start) + text + current.substring(end);
+            area.focus();
+        }
+
+        function clearInput() {
+            document.getElementById('callNotesInput').value = '';
+            document.getElementById('callNotesInput').focus();
+        }
+
+        function updateTeamsAccountPreview() {
+            if (!rawExtraTemplate) return;
+            const acc = document.getElementById('localAccountNum').value.trim() || '[Account #]';
+            document.getElementById('outExtra').innerText = rawExtraTemplate.replace(/[Account #]/g, acc);
+        }
+
+        // 5. DICTADO POR VOZ (WEB SPEECH API)
+        let recognition = null;
+        let isRecording = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'es-MX';
+            recognition.continuous = true;
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        transcript += event.results[i][0].transcript + ' ';
+                    }
+                }
+                insertText(transcript);
+            };
+
+            recognition.onerror = () => stopMicUI();
+            recognition.onend = () => stopMicUI();
+        }
+
+        function toggleDictation() {
+            if (!recognition) {
+                alert('Tu navegador no soporta dictado por voz. Usa Google Chrome o Microsoft Edge.');
+                return;
+            }
+            if (isRecording) {
+                recognition.stop();
+                stopMicUI();
+            } else {
+                recognition.start();
+                isRecording = true;
+                const btn = document.getElementById('micBtn');
+                btn.classList.add('recording');
+                btn.innerText = '🛑 Detener Dictado...';
+            }
+        }
+
+        function stopMicUI() {
+            isRecording = false;
+            const btn = document.getElementById('micBtn');
+            btn.classList.remove('recording');
+            btn.innerText = '🎙️ Dictar (Español)';
+        }
+
+        // 6. COPIAR EN 1 CLIC
+        function copyText(elementId, btnElement) {
+            const text = document.getElementById(elementId).innerText.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btnElement.innerText;
+                btnElement.innerText = '✅ ¡Copiado!';
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                }, 1500);
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generateNotes();
+            }
+        });
+
+        // 7. GENERACIÓN DE NOTAS AUDITADA
+        async function generateNotes() {
+            // Si el micrófono seguía grabando, detenerlo automáticamente
+            if (isRecording && recognition) {
+                recognition.stop();
+                stopMicUI();
+            }
+
+            const apiKey = document.getElementById('apiKeyInput').value.replace(/\s+/g, '');
+            const userText = document.getElementById('callNotesInput').value.trim();
+
+            if (!apiKey) {
+                alert('Por favor pega tu Gemini API Key gratuita en la esquina superior derecha.');
+                document.getElementById('apiKeyInput').focus();
+                return;
+            }
+            if (!userText) {
+                alert('Escribe o dicta primero qué sucedió en la llamada.');
+                document.getElementById('callNotesInput').focus();
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.innerText = '⏳ Generando con tu formato...';
+
+            const auToday = document.getElementById('auToday').innerText;
+            const auTomorrow = document.getElementById('auTomorrow').innerText;
+            const auPlus2 = document.getElementById('auPlus2').innerText;
+
+            const systemInstruction = `
+You are an expert Collections & Account Management Note Assistant for an Australian financial account team.
+The user will describe a call scenario in Spanish. You must generate professional, concise English notes strictly adhering to the user's exact corporate formatting rules:
+
+MANDATORY RULES:
+1. Prefix: Always start both Salesforce notes with "${callDirection} - ".
+2. Dates: ALWAYS format dates as DD/MM/YYYY. Context of current Australia dates: Today is ${auToday}, Tomorrow is ${auTomorrow}, in 2 days is ${auPlus2}.
+3. Nomenclatures to use naturally when applicable:
+   - "MMP" for regular/minimum scheduled payment (e.g., "standard $37.45 MMP").
+   - "POP" for Payment Over the Phone (e.g., "Processed POP for $142.52").
+   - "UTD" for Up To Date (e.g., "bringing the account fully UTD").
+   - "Self-Care portal", "BSB", "late fee waiver", "payment arrangement", "1-month moratorium", "Hardship department / ticket".
+4. Currency: Always include 2 decimal places in AUD/dollars (e.g., "$20.00", "$37.45", "$49.93"). Never write "USD".
+5. Tone: Direct, factual, corporate, zero fluff or unnecessary closing remarks.
+
+Current Requested Mode: "${currentMode}"
+- If Mode is "SF":
+  * extra_title: "💬 Plantilla Adicional (Opcional)"
+  * extra_content: "No extra template requested for this mode."
+- If Mode is "WAIVER":
+  * extra_title: "💬 Mensaje de Aprobación para MS Teams"
+  * extra_content: Provide two brief Teams options (Option 1: Quick paragraph with [Account #], Option 2: Bullet summary with [Account #], Amount, and Reason) requesting approval to waive the late fees. ALWAYS use the literal placeholder "[Account #]" so the browser can replace it locally.
+- If Mode is "HSPA":
+  * extra_title: "🛡️ Formato para Ticket 1-Month HSPA"
+  * extra_content: Fill out this exact template based on the user's input:
+Hi Team, please see the details for the new 1-month HSPA request
+Reason for financial difficulty: [Concise English reason]
+Repayment amount: [$xx.xx OR Moratorium]
+Repayment frequency: [Weekly / Fortnightly / Monthly]
+Expected duration: 1 month
+Start date: [DD/MM/YYYY]
+
+Return ONLY a valid JSON object with these exact 4 keys:
+{
+  "standard_note": "Full standard recommended Salesforce note starting with ${callDirection} - ...",
+  "compact_note": "Ultra-compact version starting with ${callDirection} - ...",
+  "extra_title": "Title for the 3rd box",
+  "extra_content": "Content for the 3rd box"
+}`;
+
+            try {
+                const rawResponse = await callGeminiWithFallback(apiKey, systemInstruction, userText, true);
+                const cleanJson = rawResponse.replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
+                const parsed = JSON.parse(cleanJson);
+
+                document.getElementById('outStandard').innerText = parsed.standard_note || '';
+                document.getElementById('outCompact').innerText = parsed.compact_note || '';
+                document.getElementById('extraCardTitle').innerText = parsed.extra_title || '💬 Plantilla Adicional';
+
+                rawExtraTemplate = parsed.extra_content || '';
+                if (currentMode === 'WAIVER') {
+                    updateTeamsAccountPreview();
+                } else {
+                    document.getElementById('outExtra').innerText = rawExtraTemplate;
+                }
+
+            } catch (err) {
+                alert(`❌ Hubo un detalle con la API Key:\n${err.message}\n\nHaz clic en el botón "🔍 Probar API" arriba a la derecha.`);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '✨ Generar Notas (Ctrl + Enter)';
+            }
+        }
+    </script>
+</body>
+</html>
